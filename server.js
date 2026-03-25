@@ -52,13 +52,11 @@ app.listen(PORT, () => {
 
 // console.log('EMAIL_USER:', process.env.EMAIL_USER);
 // console.log('EMAIL_PASS:', process.env.EMAIL_PASS);
-require('dotenv').config();
+// require('dotenv').config();
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
-
 const connectDB = require("./db");
 
 // Route imports
@@ -71,27 +69,31 @@ const paymentRoutes = require('./routes/payment');
 const userRoutes = require('./routes/userRoutes');
 const addressRoutes = require("./routes/addressRoutes");
 const orderRoutes = require('./routes/orderRoutes');
-const contactRoutes=require('./routes/contact')
-// const testRoutes = require('./routes/testRoutes');
+const contactRoutes = require('./routes/contact');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Middleware Setup
+
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3001"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://poovizhi-farms-frontend-git-main-shobiyakavinrajs-projects.vercel.app"
+  ],
   credentials: true
 }));
 
-app.use(cookieParser()); // ✅ Parses cookies sent by client
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Morgan logging only in development
+// Morgan logging for development
 if (process.env.NODE_ENV !== "production") {
-  app.use(morgan("dev")); // Logs incoming requests
+  app.use(morgan("dev"));
 }
 
-// ✅ API Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/wishlist", wishlistRoutes);
@@ -100,19 +102,19 @@ app.use("/api/checkout", checkoutRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/addresses", addressRoutes);
-app.use("/api/orders",orderRoutes);
-app.use("/api/contact",contactRoutes);
-// app.use('/api/test', testRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/contact", contactRoutes);
 
-
-// ✅ Health check
+// Health check
 app.get("/", (req, res) => res.send("🌿 Poovizhi Farms API is running."));
 
-// ✅ Connect DB and Start Server
-connectDB();
-
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
-
+// Connect to MongoDB and start server
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`🌿 Server running on port ${PORT}`);
+    });
+  })
+  .catch(err => {
+    console.error("❌ Failed to connect to MongoDB:", err);
+  });

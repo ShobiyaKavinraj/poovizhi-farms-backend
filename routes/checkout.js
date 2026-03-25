@@ -9,7 +9,7 @@ const razorpay = new Razorpay({
 });
 
 router.post('/', async (req, res) => {
-  try {
+  try {node 
     const { totalAmount } = req.body;
 
     if (!totalAmount || totalAmount < 1) {
