@@ -75,14 +75,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 
-app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://poovizhi-farms-frontend-git-main-shobiyakavinrajs-projects.vercel.app"
-  ],
-  credentials: true
-}));
+
+app.use(
+  cors({
+    origin: "https://poovizhi-farms-frontend.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  })
+);
+   
 
 app.use(cookieParser());
 app.use(express.json());
