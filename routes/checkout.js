@@ -10,19 +10,22 @@ const razorpay = new Razorpay({
 
 router.post('/', async (req, res) => {
   try {
+
+    console.log("Request Body:", req.body);   // debugging
+
     const { totalAmount } = req.body;
 
     if (!totalAmount || totalAmount < 1) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid amount'
+        message: "Invalid amount"
       });
     }
 
     const options = {
-      amount: totalAmount * 100, // convert to paise
-      currency: 'INR',
-      receipt: 'receipt_order_' + Date.now(),
+      amount: Math.round(totalAmount * 100), // convert ₹ → paise
+      currency: "INR",
+      receipt: "receipt_" + Date.now(),
     };
 
     const order = await razorpay.orders.create(options);
@@ -35,14 +38,16 @@ router.post('/', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error creating Razorpay order:', error);
+    console.error("Checkout Error:", error);
 
     res.status(500).json({
       success: false,
-      message: 'Failed to create order'
+      message: error.message,
     });
   }
 });
+
+module.exports = router;
 
 module.exports = router;// const express = require('express');
 // const Razorpay = require('razorpay');
